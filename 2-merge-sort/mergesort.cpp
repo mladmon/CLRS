@@ -23,7 +23,7 @@ int main() {
 		arrayStream >> a[i];
 	}
 
-	mergeSort(a);
+	mergeSort(a, 0, SIZE-1);
 
 	cout << "a[0.." << SIZE-1 << "]: ";
 	for (int i=0; i < SIZE; i++) {
@@ -52,7 +52,7 @@ void merge(int a[], int p, int q, int r) {
 
 	int i = 0, j = 0;
 	for (int k=p; k <= r; k++) {
-		if left[i] <= right[j]
+		if (left[i] <= right[j])
 			a[k] = left[i++];
 		else
 			a[k] = right[j++];
