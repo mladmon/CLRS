@@ -9,16 +9,16 @@ using namespace std;
 #define n 10
 #define k 20
 
-template<size_t SIZE>
-void print(const array<int,SIZE> &arr) {
+template<size_t N>
+void print(const array<int,N> &arr) {
 	for (int i=0; i < arr.size()-1; i++) {
 		cout << arr[i] << " ";
 	}
 	cout << arr[arr.size()-1];
 }
 
-template<size_t SIZE>
-void countingSort(const array<int, SIZE> &A, array<int, SIZE> &B) {
+template<size_t N>
+void countingSort(const array<int, N> &A, array<int, N> &B) {
 	// Create an array, C[0..k], with all elements initialized to 0
 	array<int, k+1> C = {};
 
