@@ -1,5 +1,4 @@
 #include <iostream>
-#include <vector>
 #include <string>
 #include <new>
 
@@ -18,8 +17,8 @@ class Node {
 
 class List {
 	private:
-		vector<Node *> list;
 		Node *head;
+		//vector<Node *> list;
 	public:
 		List() : head(NULL) {}
 		~List();
@@ -96,7 +95,7 @@ void List::print(string name) {
 			cout << "[" << n->key << "] <--> ";
 			n = n->next;
 		}
-		cout << "[" << n->key << "] -->";
+		cout << "[" << n->key << "] --> NULL";
 	}
 	cout << endl;
 }
@@ -116,6 +115,8 @@ int main() {
 	foo.listDelete(4);
 	foo.listDelete(4);
 	foo.listDelete(7);
+	foo.listDelete(n1);
+
 	foo.print("foo");
 
 	return 0;
