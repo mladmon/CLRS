@@ -1,5 +1,9 @@
 #include <iostream>
-#include <vector>
+#include <string>
+#include <exception>
+#include <chrono>
+#include <random>
+#include <unordered_set>
 #include <new>
 
 using namespace std;
@@ -9,18 +13,17 @@ class Tree;
 class Node {
 	friend class Tree;
 	private:
-		int key;
 		Node *p, *left, *right;
 	public:
-		Node(int k) : key(k), p(NULL), left(NULL), right(NULL) {}
+		int key;
+		Node(int k) : p(NULL), left(NULL), right(NULL), key(k) {}
 };
 
 class Tree {
 	private:
-		Node *root;
-		vector<Node *> t;
 		void transplant(Node *, Node *);
 	public:
+		Node *root;
 		Tree() : root(NULL) {}
 		~Tree();
 		void inorderTreeWalk(Node *);
@@ -35,8 +38,12 @@ class Tree {
 };
 
 Tree::~Tree() {
-	for (Node *n: t) {
-		delete n;
+	Node *n = treeMinimum(root);
+	while (n != NULL) {
+		Node *next = treeSuccessor(n);
+		//delete n;
+		treeDelete(n);
+		n = next;
 	}
 }
 
@@ -52,9 +59,9 @@ Node *Tree::treeSearch(Node *x, int k) {
 	if (x == NULL || k == x->key) {
 		return x;
 	} else if (k < x->key) {
-		treeSearch(x->left, k);
+		return treeSearch(x->left, k);
 	} else {
-		treeSearch(x->right, k);
+		return treeSearch(x->right, k);
 	}
 }
 
@@ -161,6 +168,80 @@ void Tree::treeDelete(Node *n) {
 }
 
 int main() {
+	unsigned long n = 20;
+	string str;
+	cout << "Enter desired number of elements in the tree, n: ";
+	getline (cin, str);
+	try {
+		n = stoul(str);
+	} catch (exception &e) {
+		cerr << "Error: " << e.what() << ": ";
+		cerr << "Using default value n = " << n << endl;
+	}
+
+	unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+	default_random_engine generator(seed);
+	/* By choosing the universe of keys to be U = {1, 2, ..., 3n}, we prevent the
+	   possibility of an infinite loop because n can no longer exceed |U|, the
+	   size of the universe (i.e., we avoid the pigeonhole principle) */
+	uniform_int_distribution<int> distribution(1, 3*n);
+
+	unordered_set<int> keys;
+	int count = 0;
+	while (keys.size() < n) {
+		keys.insert(distribution(generator));
+		count++;
+	}
+	//cout << "keys.size(): " << keys.size() << endl;
+	//cout << "count: " << count << endl;
+
+	Tree t;
+	for (const auto &key : keys) {
+		t.treeInsert(new Node(key));
+	}
+
+	cout << "t.root->key: " << t.root->key << endl;
+	t.inorderTreeWalk(t.root); cout << endl;
+	cout << "Minimum: " << t.treeMinimum(t.root)->key << endl;
+	cout << "Maximum: " << t.treeMaximum(t.root)->key << endl;
+
+	int foo = distribution(generator);
+	while (keys.insert(foo).second == false) {
+		foo = distribution(generator);
+	}
+	Node *bar = new Node(foo);
+	t.treeInsert(bar);
+	cout << "Inserting foo: " << foo << endl;
+
+	t.inorderTreeWalk(t.root); cout << endl;
+	cout << "Minimum: " << t.treeMinimum(t.root)->key << endl;
+	cout << "Maximum: " << t.treeMaximum(t.root)->key << endl;
+
+	cout << "bar:\t\t\t" << bar << endl;
+	cout << "Node with key " << foo << ":\t" << t.treeSearch(t.root, foo) << endl;
+	cout << "Node with key " << foo << ":\t" << t.iterativeTreeSearch(t.root, foo) << endl;
+
+	Node *baz = t.treeSuccessor(bar);
+	if (baz != NULL) {
+		cout << "successor of " << foo << " is: " << baz->key << endl;
+	} else {
+		cout << "successor of " << foo << " is: NULL" << endl;
+	}
+
+	baz = t.treePredecessor(bar);
+	if (baz != NULL) {
+		cout << "predecessor of " << foo << " is: " << baz->key << endl;
+	} else {
+		cout << "predecessor of " << foo << " is: NULL" << endl;
+	}
+
+	cout << "Deleting root " << t.root->key << endl;
+	t.treeDelete(t.root);
+	cout << "t.root->key: " << t.root->key << endl;
+
+	t.inorderTreeWalk(t.root); cout << endl;
+	cout << "Minimum: " << t.treeMinimum(t.root)->key << endl;
+	cout << "Maximum: " << t.treeMaximum(t.root)->key << endl;
 
 	return 0;
 }
