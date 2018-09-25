@@ -1,5 +1,8 @@
 #include <iostream>
 #include <new>
+#include <chrono>
+#include <random>
+#include <unordered_set>
 
 using namespace std;
 
@@ -10,31 +13,41 @@ class Tree;
 class Node {
 	friend class Tree;
 	private:
-		color c;
-		int key;
 		Node *left, *right, *p;
 	public:
-		Node(int k) : c(RED), key(k), left(NULL), right(NULL), p(NULL) {}
+		int key;
+		color c;
+		Node(int k) : left(NULL), right(NULL), p(NULL), key(k), c(RED) {}
 };
 
 class Tree {
 	private:
-		Node *nil, *root;
 		void leftRotate(Node *);
 		void rightRotate(Node *);
 		void rbInsertFixup(Node *);
 		void rbTransplant(Node *, Node *);
 		void rbDeleteFixup(Node *);
 	public:
+		Node *nil, *root;
 		Tree() : nil(new Node(0)), root(nil) { nil->c = BLACK; }
 		~Tree();
 		void rbInsert(Node *);
 		void rbDelete(Node *);
 		Node *rbTreeMinimum(Node *);
+		Node *rbTreeSuccessor(Node *);
+		void inorderTreeWalk(Node *);
 };
 
 Tree::~Tree() {
-	// To-Do: Delete all nodes allocated with new
+	Node *n = rbTreeMinimum(root);
+	while (n != nil) {
+		Node *next = rbTreeSuccessor(n);
+		cout << "Deleting: " << n->key << "(" << n->c << ")" << endl;
+		rbDelete(n);
+		cout << "Next: " << next->key << "(" << next->c << ")" << endl;
+		n = next;
+	}
+	cout << "Deleting nil!" << endl;
 	delete nil;
 }
 
@@ -79,8 +92,8 @@ void Tree::rbInsertFixup(Node *z) {
 		if (z->p == z->p->p->left) {
 			Node *y = z->p->p->right;
 			if (y->c == RED) {				// case 1
-				y->c = BLACK;
 				z->p->c = BLACK;
+				y->c = BLACK;
 				z->p->p->c = RED;
 				z = z->p->p;
 			} else {
@@ -95,8 +108,8 @@ void Tree::rbInsertFixup(Node *z) {
 		} else {
 			Node *y = z->p->p->left;
 			if (y->c == RED) {				// case 1
-				y->c = BLACK;
 				z->p->c = BLACK;
+				y->c = BLACK;
 				z->p->p->c = RED;
 				z = z->p->p;
 			} else {
@@ -166,9 +179,12 @@ void Tree::rbDeleteFixup(Node *x) {
 				if (w->right->c == BLACK) {
 					w->left->c = BLACK;
 					w->c = RED;
+					rightRotate(w);
+					w = x->p->right;
 				}
 				w->c = x->p->c;
 				x->p->c = BLACK;
+				w->right->c = BLACK;
 				leftRotate(x->p);
 				x = root;
 			}
@@ -187,9 +203,12 @@ void Tree::rbDeleteFixup(Node *x) {
 				if (w->left->c == BLACK) {
 					w->right->c = BLACK;
 					w->c = RED;
+					leftRotate(w);
+					w = x->p->left;
 				}
 				w->c = x->p->c;
 				x->p->c = BLACK;
+				w->left->c = BLACK;
 				rightRotate(x->p);
 				x = root;
 			}
@@ -236,7 +255,48 @@ Node *Tree::rbTreeMinimum(Node *x) {
 	return x;
 }
 
+Node *Tree::rbTreeSuccessor(Node *x) {
+	if (x->right != nil) {
+		return rbTreeMinimum(x->right);
+	}
+	Node *y = x->p;
+	while (y != nil && x == y->right) {
+		x = y;
+		y = y->p;
+	}
+	return y;
+}
+
+void Tree::inorderTreeWalk(Node *x) {
+	if (x != nil) {
+		inorderTreeWalk(x->left);
+		cout << x->key << "(" << x->c << ") ";
+		inorderTreeWalk(x->right);
+	}
+}
+
 int main(int argc, char *argv[]) {
+	// size n of our red-black tree
+	unsigned n = 10;
+
+	// Generate a red-black tree of size n from a uniformly random set of keys
+	unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+	default_random_engine generator(seed);
+	uniform_int_distribution<int> distribution(1, 3*n);
+
+	unordered_set<int> keys;
+	while (keys.size() < n) {
+		keys.insert(distribution(generator));
+	}
+
+	Tree t;
+	for (const int &key : keys) {
+		t.rbInsert(new Node(key));
+	}
+
+	// test red-black tree operations for correctness
+	cout << "t.root->key: " << t.root->key << endl;
+	t.inorderTreeWalk(t.root); cout << endl;
 
 	return 0;
 }
