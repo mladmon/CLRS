@@ -150,7 +150,52 @@ void Tree::rbTransplant(Node *u, Node *v) {
 }
 
 void Tree::rbDeleteFixup(Node *x) {
-	// To-Do: Implement this method
+	while (x != root && x->c == BLACK) {
+		if (x == x->p->left) {
+			Node *w = x->p->right;
+			if (w->c == RED) {
+				w->c = BLACK;
+				x->p->c = RED;
+				leftRotate(x->p);
+				w = x->p->right;
+			}
+			if (w->left->c == BLACK && w->right->c == BLACK) {
+				w->c = RED;
+				x = x->p;
+			} else {
+				if (w->right->c == BLACK) {
+					w->left->c = BLACK;
+					w->c = RED;
+				}
+				w->c = x->p->c;
+				x->p->c = BLACK;
+				leftRotate(x->p);
+				x = root;
+			}
+		} else {
+			Node *w = x->p->left;
+			if (w->c == RED) {
+				w->c = BLACK;
+				x->p->c = RED;
+				rightRotate(x->p);
+				w = x->p->left;
+			}
+			if (w->right->c == BLACK && w->left->c == BLACK) {
+				w->c = RED;
+				x = x->p;
+			} else {
+				if (w->left->c == BLACK) {
+					w->right->c = BLACK;
+					w->c = RED;
+				}
+				w->c = x->p->c;
+				x->p->c = BLACK;
+				rightRotate(x->p);
+				x = root;
+			}
+		}
+	}
+	x->c = BLACK;
 }
 
 void Tree::rbDelete(Node *z) {
