@@ -23,14 +23,18 @@ class Tree {
 		void leftRotate(Node *);
 		void rightRotate(Node *);
 		void rbInsertFixup(Node *);
+		void rbTransplant(Node *, Node *);
+		void rbDeleteFixup(Node *);
 	public:
 		Tree() : nil(new Node(0)), root(nil) { nil->c = BLACK; }
 		~Tree();
 		void rbInsert(Node *);
+		void rbDelete(Node *);
+		Node *rbTreeMinimum(Node *);
 };
 
 Tree::~Tree() {
-	// To-Do: delete all nodes allocated with new
+	// To-Do: Delete all nodes allocated with new
 	delete nil;
 }
 
@@ -132,6 +136,59 @@ void Tree::rbInsert(Node *z) {
 	z->right = nil;
 	z->c = RED;
 	rbInsertFixup(z);
+}
+
+void Tree::rbTransplant(Node *u, Node *v) {
+	if (u->p == nil) {
+		root = v;
+	} else if (u == u->p->left) {
+		u->p->left = v;
+	} else {
+		u->p->right = v;
+	}
+	v->p = u->p;
+}
+
+void Tree::rbDeleteFixup(Node *x) {
+	// To-Do: Implement this method
+}
+
+void Tree::rbDelete(Node *z) {
+	Node *y = z, *x;
+	color y_original = y->c;
+	if (z->left == nil) {
+		x = z->right;
+		rbTransplant(z, z->right);
+	} else if (z->right == nil) {
+		x = z->left;
+		rbTransplant(z, z->left);
+	} else {
+		y = rbTreeMinimum(z->right);
+		y_original = y->c;
+		x = y->right;
+		if (y->p == z) {
+			x->p = y;
+		} else {
+			rbTransplant(y, y->right);
+			y->right = z->right;
+			y->right->p = y;
+		}
+		rbTransplant(z, y);
+		y->left = z->left;
+		y->left->p = y;
+		y->c = z->c;
+	}
+	if (y_original == BLACK) {
+		rbDeleteFixup(x);
+	}
+	delete z;
+}
+
+Node *Tree::rbTreeMinimum(Node *x) {
+	while (x->left != nil) {
+		x = x->left;
+	}
+	return x;
 }
 
 int main(int argc, char *argv[]) {
