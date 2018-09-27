@@ -8,8 +8,6 @@ using namespace std;
 
 enum color { RED, BLACK };
 
-class Tree;
-
 class Node {
 	friend class Tree;
 	private:
