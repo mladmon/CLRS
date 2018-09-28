@@ -6,13 +6,15 @@
 enum color { RED, BLACK };
 
 class Node {
-	protected:
+	private:
 		Node *left, *right, *p;
 	public:
 		int key;
 		color c;
+		int size; // only used by OS_Tree class
 		Node(int k) : left(NULL), right(NULL), p(NULL), key(k), c(RED) {}
 	friend class RB_Tree;
+	friend class OS_Tree;
 };
 
 class RB_Tree {
