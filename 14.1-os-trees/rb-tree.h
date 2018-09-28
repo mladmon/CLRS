@@ -5,8 +5,6 @@
 
 enum color { RED, BLACK };
 
-class RB_Tree;
-
 class Node {
 	friend class RB_Tree;
 	private:
