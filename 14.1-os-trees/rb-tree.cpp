@@ -3,6 +3,7 @@
 #include "rb-tree.h"
 
 RB_Tree::~RB_Tree() {
+	std::cout << "Executing RB_Tree::~RB_Tree()!" << std::endl;
 	Node *n = rbTreeMinimum(root);
 	while (n != nil) {
 		Node *next = rbTreeSuccessor(n);
@@ -179,6 +180,7 @@ void RB_Tree::rbDeleteFixup(Node *x) {
 }
 
 void RB_Tree::rbDelete(Node *z) {
+	std::cout << "Executing RB_Tree::rbDelete()!" << std::endl;
 	Node *y = z, *x;
 	color y_original = y->c;
 	if (z->left == nil) {
@@ -231,7 +233,7 @@ Node *RB_Tree::rbTreeSuccessor(Node *x) {
 void RB_Tree::inorderTreeWalk(Node *x) {
 	if (x != nil) {
 		inorderTreeWalk(x->left);
-		std::cout << x->key << "(" << x->c << ") ";
+		std::cout << x->key << "|" << x->size << "(" << x->c << ") ";
 		inorderTreeWalk(x->right);
 	}
 }

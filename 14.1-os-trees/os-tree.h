@@ -7,6 +7,7 @@ class OS_Tree : public RB_Tree {
 	private:
 		void leftRotate(Node *);
 		void rightRotate(Node *);
+		void decrementSizesToRoot(Node *);
 	public:
 		OS_Tree() {	nil->size = 0; }
 		void rbInsert(Node *);
