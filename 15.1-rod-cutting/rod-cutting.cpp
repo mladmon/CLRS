@@ -66,6 +66,39 @@ int bottomUpCutRod(int p[], int n) {
 	return r[n];
 }
 
+int extendedBottomUpCutRod(int p[], int n, int s[]) {
+	int r[n+1];
+	r[0] = 0;
+
+	for (int i=1; i <= n; i++) {
+		int max_r = -1;
+		for (int j=0; j < i; j++) {
+			int r_j = p[j] + r[i-j-1];
+			if (r_j > max_r) {
+				max_r = r_j;
+				s[i] = j+1;
+			}
+		}
+		r[i] = max_r;
+	}
+
+	return r[n];
+}
+
+void printCutRodSolution(int p[], int n) {
+	int s[n];
+	int max_r = extendedBottomUpCutRod(p, n, s);
+	cout << "extendedBottomUpCutRod(): $" << max_r << endl;
+
+	// print the optimal decomoposition of a rod of length n inches
+	cout << "printCutRodSolution(): " << n << " = ";
+	while (n > 0) {
+		cout << s[n] << " ";
+		n -= s[n];
+	}
+	cout << endl;
+}
+
 int main() {
 	// sample price table for rods of length i, in inches
 	int p[] = {1, 5, 8, 9, 10, 17, 17, 20, 24, 30};
@@ -85,6 +118,8 @@ int main() {
 
 	int r3 = bottomUpCutRod(p, n);
 	cout << "bottomUpCutRod(): $" << r3 << endl;
+
+	printCutRodSolution(p, n);
 
 	return 0;
 }
