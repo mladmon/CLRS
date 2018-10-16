@@ -4,7 +4,7 @@ using namespace std;
 
 // Recursive top-down implementation: O(2^n)
 int cutRod(int p[], int n) {
-	// base case: rod of length 0 inches generates $0 in revenue
+	// base case: a rod of length 0 inches generates $0 in revenue
 	if (n == 0) {
 		return 0;
 	}
@@ -45,6 +45,27 @@ int memoizedCutRod(int p[], int n) {
 	return memoizedCutRodAux(p, n, r);
 }
 
+// Dynamic programming: bottom-up
+int bottomUpCutRod(int p[], int n) {
+	// create an auxiliary array, r, to store revenues as they're computed
+	int r[n+1];
+	r[0] = 0; // a rod of length 0 inches generates $0 in revenue
+
+	// calculate max revenue for rods of length i inches, in order, from 1..n
+	for (int i=1; i <= n; i++) {
+		int max_r = -1;
+		for (int j=0; j < i; j++) {
+			int r_j = p[j] + r[i-j-1];
+			if (r_j > max_r) {
+				max_r = r_j;
+			}
+		}
+		r[i] = max_r;
+	}
+
+	return r[n];
+}
+
 int main() {
 	// sample price table for rods of length i, in inches
 	int p[] = {1, 5, 8, 9, 10, 17, 17, 20, 24, 30};
@@ -61,6 +82,9 @@ int main() {
 
 	int r2 = memoizedCutRod(p, n);
 	cout << "memoizedCutRod(): $" << r2 << endl;
+
+	int r3 = bottomUpCutRod(p, n);
+	cout << "bottomUpCutRod(): $" << r3 << endl;
 
 	return 0;
 }
