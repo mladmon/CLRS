@@ -32,7 +32,7 @@ void matrixChainOrder(int p[], int n, vector<vector<int> > &m,
 				int numMults = m[j][k] + m[k+1][j+i-1] + p[j-1]*p[k]*p[j+i-1];
 				if (numMults < m[j][j+i-1]) {
 					m[j][j+i-1] = numMults;
-					s[j][j+1-1] = k;
+					s[j][j+i-1] = k;
 				}
 			}
 		}
@@ -41,6 +41,15 @@ void matrixChainOrder(int p[], int n, vector<vector<int> > &m,
 
 void printOptimalParens(vector<vector<int> > &s, int i, int j) {
 
+}
+
+void printTable(vector<vector<int> > &t, int n) {
+	for (int i=1; i <= n; i++) {
+		for (int j=i; j <= n; j++) {
+			cout << "(" << i << "," << j << "):" << t[i][j] << "  ";
+		}
+		cout << endl;
+	}
 }
 
 int main() {
@@ -63,13 +72,8 @@ int main() {
 	vector<vector<int> > s(n+1, vector<int>(n+1, 0));
 
 	matrixChainOrder(p, n, m, s);
-
-	for (int i=1; i <= n; i++) {
-		for (int j=i; j <= n; j++) {
-			cout << "(" << i << "," << j << "):" << m[i][j] << "  ";
-		}
-		cout << endl;
-	}
+	printTable(m, n);
+	printTable(s, n);
 
 	return 0;
 }
