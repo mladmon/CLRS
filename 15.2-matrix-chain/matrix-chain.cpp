@@ -16,6 +16,11 @@ void memoizedMatrixChain(int p[], vector<vector<int> > &m) {
 
 }
 
+
+/* Let us assume that to optimally parenthesize the matrix chain Ai..j, or
+	Ai*Ai+1*...*Aj, we split between Ak and Ak+1, where i <= k < j. The cost
+	of multiplying subproducts Ai..k and Ak+1..j is p[i-1]*p[k]*p[j] scalar
+	multiplications. */
 void matrixChainOrder(int p[], int n, vector<vector<int> > &m,
 															vector<vector<int> > &s) {
 	/* all matrix chains of length one contribute 0 scalar multiplications to
@@ -40,7 +45,14 @@ void matrixChainOrder(int p[], int n, vector<vector<int> > &m,
 }
 
 void printOptimalParens(vector<vector<int> > &s, int i, int j) {
-
+	if (i == j) {
+		cout << "A" << i;
+	} else {
+		cout << "(";
+		printOptimalParens(s, i, s[i][j]);
+		printOptimalParens(s, s[i][j]+1, j);
+		cout << ")";
+	}
 }
 
 void printTable(vector<vector<int> > &t, int n) {
@@ -62,18 +74,16 @@ int main() {
 	   compute the matrix chain Ai*Ai+1*...*Aj for all 1 <= i <= j <= n */
 	vector<vector<int> > m(n+1, vector<int>(n+1, INT_MAX));
 
-	/* Let us assume that to optimally parenthesize the product Ai..j, or
-	   Ai*Ai+1*...*Aj, we split between Ak and Ak+1, where i <= k < j. The cost
-	   of multiplying subproducts Ai..k and Ak+1..j is p[i-1]*p[k]*p[j] scalar
-		multiplications. */
-
 	/* let s[i,j] contain a value of k at which we split the product Ai*Ai+1...*Aj
 	   in an optimal parenthesization */
 	vector<vector<int> > s(n+1, vector<int>(n+1, 0));
 
 	matrixChainOrder(p, n, m, s);
-	printTable(m, n);
-	printTable(s, n);
+	printTable(m, n); cout << endl;
+	printTable(s, n); cout << endl;
+
+	printOptimalParens(s, 1, n);
+	cout << endl;
 
 	return 0;
 }
