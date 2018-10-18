@@ -4,11 +4,23 @@
 
 using namespace std;
 
-void recursiveMatrixChain(int p[], vector<vector<int> > &m, int i, int j) {
-
+int recursiveMatrixChain(int p[], int i, int j, vector<vector<int> > &m) {
+	if (i == j) {
+		m[i][i] = 0;
+		return 0;
+	} else {
+		for (int k=i; k < j; k++) {
+			int numMults = recursiveMatrixChain(p, i, k, m) +
+								recursiveMatrixChain(p, k+1, j, m) + p[i-1]*p[k]*p[j];
+			if (numMults < m[i][j]) {
+				m[i][j] = numMults;
+			}
+		}
+		return m[i][j];
+	}
 }
 
-void lookupChain(int p[], vector<vector<int> > &m, int i, int j) {
+void lookupChain(int p[], int i, int j, vector<vector<int> > &m) {
 
 }
 
@@ -83,7 +95,11 @@ int main() {
 	printTable(s, n); cout << endl;
 
 	printOptimalParens(s, 1, n);
-	cout << endl;
+	cout << endl << endl;
+
+	vector<vector<int> > m1(n+1, vector<int>(n+1, INT_MAX));
+	recursiveMatrixChain(p, 1, n, m1);
+	printTable(m1, n); cout << endl;
 
 	return 0;
 }
