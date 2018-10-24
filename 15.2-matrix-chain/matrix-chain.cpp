@@ -20,12 +20,23 @@ int recursiveMatrixChain(int p[], int i, int j, vector<vector<int> > &m) {
 	}
 }
 
-void lookupChain(int p[], int i, int j, vector<vector<int> > &m) {
-
-}
-
-void memoizedMatrixChain(int p[], vector<vector<int> > &m) {
-
+int memoizedMatrixChain(int p[], int i, int j, vector<vector<int> > &m) {
+	if (m[i][j] < INT_MAX) { // we've already solved this subproblem, return it
+		return m[i][j];
+	}
+	if (i == j) { // trival matrix-chain of size 1 requires 0 scalar mults
+		m[i][j] = 0;
+	} else { // solve the non-trivial subproblem for the first time
+		for (int k=i; k < j; k++) {
+			int numMults = memoizedMatrixChain(p, i, k, m) +
+			           memoizedMatrixChain(p, k+1, j, m) +
+			           p[i-1]*p[k]*p[j];
+			if (numMults < m[i][j]) { // always true the first time we check
+				m[i][j] = numMults;
+			}
+		}
+	}
+	return m[i][j];
 }
 
 
@@ -91,15 +102,20 @@ int main() {
 	vector<vector<int> > s(n+1, vector<int>(n+1, 0));
 
 	matrixChainOrder(p, n, m, s);
+	cout << "matrixChainOrder(): " << m[1][6] << endl;
 	printTable(m, n); cout << endl;
 	printTable(s, n); cout << endl;
 
-	printOptimalParens(s, 1, n);
-	cout << endl << endl;
+	cout << "printOptimalParens(): ";
+	printOptimalParens(s, 1, n); cout << endl << endl;
 
 	vector<vector<int> > m1(n+1, vector<int>(n+1, INT_MAX));
-	recursiveMatrixChain(p, 1, n, m1);
+	cout << "recursiveMatrixChain(): " << recursiveMatrixChain(p, 1, n, m1) << endl;
 	printTable(m1, n); cout << endl;
+
+	vector<vector<int> > m2(n+1, vector<int>(n+1, INT_MAX));
+	cout << "memoizedMatrixChain(): " << memoizedMatrixChain(p, 1, n, m2) << endl;
+	printTable(m2, n); cout << endl;
 
 	return 0;
 }
