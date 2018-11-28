@@ -15,7 +15,7 @@ struct Vertex {
 	Vertex(char key) : key(key), c(WHITE), pred(nullptr), d(-1) {}
 };
 
-void bfs(const unordered_map<char, Vertex *> &graph, Vertex *s) {
+void bfs(Vertex *s) {
 	// color the source vertex gray, set its distance to 0, and enqueue it
 	s->c = GRAY;
 	s->d = 0;
@@ -38,13 +38,13 @@ void bfs(const unordered_map<char, Vertex *> &graph, Vertex *s) {
 	}
 }
 
-void printPath(const unordered_map<char, Vertex *> &graph, Vertex *s, Vertex *v) {
+void printPath(Vertex *s, Vertex *v) {
 	if (v == s) {
 		cout << s->key << " ";
 	} else if (v->pred == nullptr) {
 		cout << "No path from " << s->key << " to " << v->key << " exists.";
 	} else {
-		printPath(graph, s, v->pred);
+		printPath(s, v->pred);
 		cout << v->key << " ";
 	}
 }
@@ -85,10 +85,10 @@ int main() {
 
 	/* you can access vertices directly, via graph['key'], or via graph[v->key],
 	   the last method being a bit superfluous */
-	bfs(graph, s);
-	printPath(graph, s, v); cout << endl;
-	printPath(graph, s, graph['u']); cout << endl;
-	printPath(graph, s, graph[y->key]); cout << endl;
+	bfs(s);
+	printPath(s, v); cout << endl;
+	printPath(s, graph['u']); cout << endl;
+	printPath(s, graph[y->key]); cout << endl;
 	cout << graph['v']->key << ".d: " << graph['v']->d << endl;
 	cout << graph['y']->key << ".d: " << graph['y']->d << endl;
 
