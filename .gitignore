@@ -21,3 +21,5 @@
 22.3-dfs/depth-first-search
 22.4-topological-sort/topological-sort
 22.5-strongly-con-comp/strongly-connected-components
+23.2-min-spanning-tree/kruskal
+23.2-min-spanning-tree/prim
