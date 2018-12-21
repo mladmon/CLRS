@@ -24,3 +24,4 @@
 23.2-min-spanning-tree/kruskal
 23.2-min-spanning-tree/prim
 24.1-bellman-ford/bellman-ford
+24.2-dag-shortest-paths/dag-shortest-paths
