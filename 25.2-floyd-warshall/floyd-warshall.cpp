@@ -15,6 +15,32 @@ void print(const matrix &g) {
 	}
 }
 
+matrix transitiveClosure(const matrix &G) {
+	int n = G.size();
+	matrix T(n, vector<int>(n, 0));
+	for (int i=0; i < n; ++i) {
+		for (int j=0; j < n; ++j) {
+			if (i == j || G[i][j] != numeric_limits<int>::max()) {
+				T[i][j] = 1;
+			}
+		}
+	}
+	cout << "T0" << endl; print(T);
+
+	for (int k=0; k < n; ++k) {
+		for (int i=0; i < n; ++i) {
+			for (int j=0; j < n; ++j) {
+				if (!T[i][j]) {
+					T[i][j] = T[i][k] && T[k][j];
+				}
+			}
+		}
+		cout << "T" << k+1 << endl; print(T);
+	}
+
+	return T;
+}
+
 matrix floydWarshall(const matrix &W) {
 	int n = W.size();
 	matrix D = W;	// D_0
@@ -49,7 +75,17 @@ int main() {
 	};
 
 	matrix D = floydWarshall(W);
-	cout << "D" << endl; print(D);
+	cout << "D" << endl; print(D); cout << endl;
+
+	matrix fig25_5 = {
+		{0, infinity, infinity, infinity},
+		{infinity, 0, 1, 1},
+		{infinity, 1, 0, infinity},
+		{1, infinity, 1, 0}
+	};
+
+	matrix T = transitiveClosure(fig25_5);
+	cout << "T" << endl; print(T);
 
 	return 0;
 }
