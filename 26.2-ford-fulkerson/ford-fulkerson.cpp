@@ -150,6 +150,14 @@ int main() {
 
 	int maxFlow = fordFulkerson(G, G['s'], G['t']);
 	cout << "max flow: " << maxFlow << endl;
+	for (auto &v_pair : G) {
+		Vertex *u = v_pair.second;
+		for (auto &e_pair : u->adj) {
+			edge *e = e_pair.second;
+			cout << "(" << u->key << "," << e->v->key << ") " << e->f << "/" << e->c
+					<< " " << e->c_f << endl;
+		}
+	}
 
 	for (auto &v_pair : G) {
 		Vertex *v = v_pair.second;
