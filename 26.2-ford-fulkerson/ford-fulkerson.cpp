@@ -73,7 +73,10 @@ bool findAugmentingPath(Vertex *s, Vertex *v, vector<Vertex *> &p) {
 
 /* if an edge has a nonzero capacity, c(u,v), it is an edge in G. If an edge
 	has a nonzero residual capacity, c_f(u,v), it is an edge in residual
-	network G_f. Note, an edge may be in both, G and G_f. */
+	network G_f. Note, an edge may be in both, G and G_f.
+
+	Note: the Edmonds-Karp algorithm is an implementation of Ford-Fulkerson that
+   uses BFS() to find an augmenting path, imp. the runtime bound to O(VE^2) */
 int fordFulkerson(flow_network &G, Vertex *s, Vertex *t) {
 	vector<Vertex *> p;	// augmenting path
 	bfs(G, G['s']);		// performs breadth-first search on G_f
