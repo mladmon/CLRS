@@ -3,6 +3,7 @@
 04.1-max-subarray/maxsubarray
 04.1-max-subarray/4.1-5/kadane
 06.4-heapsort/heapsort
+06.5-priority-queue/heap
 07.1-quicksort/quicksort
 08.2-counting-sort/counting-sort
 08.3-radix-sort/radix-sort
