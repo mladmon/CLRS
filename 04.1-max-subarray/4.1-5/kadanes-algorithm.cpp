@@ -82,6 +82,12 @@ int main() {
 		}
 	}
 
+	cout << "a [ ";
+	for (int i=0; i < size; i++) {
+		cout << a[i] << " ";
+	}
+	cout << "]" << endl;
+
 	cout << "Maximum subarray is a[" << max.getLeft() << ".." << max.getRight()
 			<< "]: " << max.getValue() << endl;
 
